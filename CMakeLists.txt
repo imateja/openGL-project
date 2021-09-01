@@ -23,7 +23,6 @@ find_package(glfw3 REQUIRED)
 find_package(ASSIMP REQUIRED)
 
 add_subdirectory(libs/glad)
-add_subdirectory(libs/imgui)
 
 add_definitions(${OPENGL_DEFINITIONS})
 
@@ -33,7 +32,7 @@ set_source_files_properties(libs/stb_image.cpp include/stb_image.h
         COMPILE_FLAGS
         "-Wno-shift-negative-value -Wno-implicit-fallthrough")
 
-set(LIBS glfw glad OpenGL::GL X11 Xrandr Xinerama Xi Xxf86vm Xcursor dl pthread freetype ${ASSIMP_LIBRARIES} STB_IMAGE imgui)
+set(LIBS glfw glad OpenGL::GL X11 Xrandr Xinerama Xi Xxf86vm Xcursor dl pthread freetype ${ASSIMP_LIBRARIES} STB_IMAGE)
 
 
 configure_file(configuration/root_directory.h.in configuration/root_directory.h)
@@ -42,7 +41,7 @@ include_directories(${CMAKE_BINARY_DIR}/configuration)
 
 include_directories(include/)
 add_executable(${PROJECT_NAME}
-        ${SOURCES} include/rg/callbacks.h)
+        ${SOURCES} include/rg/callbacks.h include/rg/consts.h)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
