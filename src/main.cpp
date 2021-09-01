@@ -17,7 +17,8 @@
 #include <common.h>
 #include <glm/glm.hpp>
 #include "../include/rg/consts.h"
-//setting width height and title
+#include "../include/rg/Texture2D.h"
+
 
 
 
@@ -44,10 +45,48 @@ int main(){
     }
 
 
+    Shader groundShader = Shader("resources/shaders/groundVertexShader.vs",
+                                 "resources/shaders/groundFragmentShader.fs");
+
+    unsigned int GroundVAO,GroundVBO,GroundEBO;
+    glGenVertexArrays(1,&GroundVAO);
+    glGenBuffers(1,&GroundVBO);
+    glGenBuffers(1,&GroundEBO);
+
+    glBindVertexArray(GroundVAO);
+    glBindBuffer(GL_ARRAY_BUFFER,GroundVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,GroundEBO);
+
+    glBufferData(GL_ARRAY_BUFFER,sizeof(groundVertices),groundVertices,GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(groundIndices),groundIndices,GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,9*sizeof(float),(void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,9*sizeof(float),(void*)(3*sizeof(float)));
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,9*sizeof(float),(void*)(7*sizeof(float)));
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    unsigned int GroundTex = loadTexture("resources/textures/grass_tex.jpg");
+    groundShader.use();
+    groundShader.setInt("tex1",GroundTex);
+
+
+
+
     //Rendering loop
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
         update_window(window);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D,GroundTex);
+        glBindVertexArray(GroundVAO);
+        glDrawElements(GL_TRIANGLES,6,GL_UNSIGNED_INT,0);
+
         //glUseProgram(shaderProgram);
         glfwSwapBuffers(window);
     }
