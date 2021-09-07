@@ -6,6 +6,7 @@
 #define PROJECT_BASE_CONSTS_H
 #include <rg/Camera.h>
 #include <stb_image.h>
+#include <math.h>
 int width = 800;
 int height = 600;
 const char *title = "Naruto";
@@ -16,7 +17,7 @@ bool firstMouse = true;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-
+void processInput(GLFWwindow *window);
 
 
 // timing
@@ -113,37 +114,24 @@ float skyboxVertices[] = {
         1.0f, -1.0f,  1.0f
 };
 
-float groundVertices[] = {
-            //Position                  //Color                  //Tex Cords
-        -0.5f, 0.5f, -1.0f,         0.7f, 1.0f, 1.0f, 1.0f,        0.0f, 0.0f,    //Top Left
-        -0.5f, -0.5f, -0.5f,        1.0f, 0.7f, 1.0f, 1.0f,        0.0f, 1.0f,    //Bottom left
-         0.5f, 0.5f, 0.5f,         1.0f, 1.0f, 0.7f, 1.0f,        1.0f, 0.0f,    //Top Right
-         0.5f, -0.5f, 0.5f,        1.0f, 1.0f, 1.0f, 1.0f,        1.0f, 1.0f     //Bottom Right
-};
 
-unsigned int groundIndices[] = {
-        1, 2, 3,
-        0, 1, 2
-};
+//Makes an array of vec3 that translate one cube to circle of cubes
+std::vector<glm::vec3> CubeCircle(float radius,int numOfCubes){
+    std::vector<glm::vec3>models;
+    //models.push_back(glm::vec3(radius/2,1.0f,radius/2));
+    auto increment = M_PI_2/numOfCubes;
+    for(auto angle = 0.0f;angle<=radius*M_PI_2;angle+=increment){
+        models.push_back((glm::vec3(radius* ((cos(angle)+1.0f)/2),1.0f,radius* (sin(angle)+1.0f)/2)));
 
-
-
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+    }
+    return models;
 }
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
 
-
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 
 

@@ -1,13 +1,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-
-
 #include <rg/filesystem.h>
 #include <rg/Shader.h>
 #include <rg/Camera.h>
@@ -15,18 +12,17 @@
 #include <rg/Texture2D.h>
 #include <iostream>
 #include <rg/consts.h>
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow *window);
+
+
+
 
 // camera
-Camera camera(glm::vec3(6.0f, 0.0f, 15.0f));
+Camera camera(glm::vec3(1.0f, 3.0f, 20.0f));
 
 
 int main()
 {
-    // glfw: initialize and configure
-    // ------------------------------
+    // glfw init
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -37,7 +33,6 @@ int main()
 #endif
 
     // glfw window creation
-    // --------------------
     GLFWwindow* window = glfwCreateWindow(width, height, "Naruto", NULL, NULL);
     if (window == NULL)
     {
@@ -53,26 +48,19 @@ int main()
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
+    // load OpenGL
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
 
-    // configure global opengl state
-    // -----------------------------
+
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile shaders
-    // -------------------------
+    //shaders
     Shader shader("resources/shaders/cubeVertexShader.vs", "resources/shaders/cubeFragmentShader.fs");
     Shader skyboxShader("resources/shaders/skyBoxVertexShader.vs", "resources/shaders/skyBoxFragmentShader.fs");
-
-    // set up vertex data (and buffer(s)) and configure vertex attributes
-    // ------------------------------------------------------------------
-
 
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
@@ -96,7 +84,6 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     // load textures
-    // -------------
     unsigned int cubeTexture = loadTexture(FileSystem::getPath("resources/textures/container.jpeg").c_str());
 
     std::vector<std::string> faces
@@ -110,8 +97,7 @@ int main()
             };
     unsigned int cubemapTexture = loadCubemap(faces);
 
-    // shader configuration
-    // --------------------
+    // shader activation
     shader.use();
     shader.setInt("texture1", 0);
 
@@ -119,21 +105,17 @@ int main()
     skyboxShader.setInt("skybox2", 0);
 
     // render loop
-    // -----------
     while (!glfwWindowShouldClose(window))
     {
         // per-frame time logic
-        // --------------------
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         // input
-        // -----
         processInput(window);
 
         // render
-        // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -142,15 +124,19 @@ int main()
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)width / (float)height, 0.1f, 100.0f);
-        shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
-        // cubes
-        glBindVertexArray(cubeVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
+        std::vector<glm::vec3>models = CubeCircle(10,4);
+        for(int i=0;i<models.size();i++) {
+            shader.setMat4("model", glm::translate(model,models[i]));
+            shader.setMat4("view", view);
+            shader.setMat4("projection", projection);
+            // cubes
+            glBindVertexArray(cubeVAO);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, cubeTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+        }
+
 
         // draw skybox2 as last
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
