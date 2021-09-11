@@ -239,18 +239,7 @@ int main()
             cubeShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
-        for (unsigned int i = 0; i < pointLightPositionsOuter.size(); i++)
-        {
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, pointLightPositionsOuter[i]);
-            model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-            cubeShader.setMat4("model", model);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
-
-
-
+        
         // draw skybox2 as last
         glDisable(GL_CULL_FACE);
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
