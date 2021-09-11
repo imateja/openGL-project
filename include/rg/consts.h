@@ -7,8 +7,10 @@
 #include <rg/Camera.h>
 #include <stb_image.h>
 #include <math.h>
-int width = 800;
-int height = 600;
+#include <rg/Shader.h>
+#include <string>
+int width = 1920;
+int height = 1080;
 const char *title = "Naruto";
 float lastX = (float)width / 2.0;
 float lastY = (float)height / 2.0;
@@ -27,6 +29,72 @@ float lastFrame = 0.0f;
 //vertices indices and other things
 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+
+
+void makeLight(Shader shader,int i,std::vector<glm::vec3> position,int currFrame){
+
+    float time = currFrame*100;
+
+    std::string currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setVec3(currentLight.append(".position"),position[i]);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setVec3(currentLight.append(".ambient"),0.03f, 0.03f, 0.03f);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setVec3(currentLight.append(".diffuse"),0.05f, 0.05f, 0.05f);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setVec3(currentLight.append(".specular"),0.03f, 0.03f, 0.03f);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setFloat(currentLight.append(".constant"),0.5f);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setFloat(currentLight.append(".linear"),0.05f);
+    currentLight = "pointLights[";
+    currentLight.append(std::to_string(i)).append("]");
+    shader.setFloat(currentLight.append(".quadratic"),0.020f);
+}
+
+
+
+/*
+ *         // point light 1
+        lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+        lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("pointLights[0].constant", 1.0f);
+        lightingShader.setFloat("pointLights[0].linear", 0.09);
+        lightingShader.setFloat("pointLights[0].quadratic", 0.032);
+        // point light 2
+        lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
+        lightingShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("pointLights[1].constant", 1.0f);
+        lightingShader.setFloat("pointLights[1].linear", 0.09);
+        lightingShader.setFloat("pointLights[1].quadratic", 0.032);
+        // point light 3
+        lightingShader.setVec3("pointLights[2].position", pointLightPositions[2]);
+        lightingShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("pointLights[2].constant", 1.0f);
+        lightingShader.setFloat("pointLights[2].linear", 0.09);
+        lightingShader.setFloat("pointLights[2].quadratic", 0.032);
+        // point light 4
+        lightingShader.setVec3("pointLights[3].position", pointLightPositions[3]);
+        lightingShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+        lightingShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+        lightingShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("pointLights[3].constant", 1.0f);
+        lightingShader.setFloat("pointLights[3].linear", 0.09);
+        lightingShader.setFloat("pointLights[3].quadratic", 0.032);
+        */
 
 
 float cubeVertices[] = {

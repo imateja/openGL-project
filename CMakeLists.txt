@@ -41,7 +41,7 @@ include_directories(${CMAKE_BINARY_DIR}/configuration)
 
 include_directories(include/)
 add_executable(${PROJECT_NAME}
-        ${SOURCES} include/rg/callbacks.h include/rg/consts.h include/rg/filesystem.h)
+        ${SOURCES} include/rg/consts.h include/rg/filesystem.h include/rg/mesh.h include/rg/model.h)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
