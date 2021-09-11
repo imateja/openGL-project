@@ -68,7 +68,7 @@ int main()
     Shader skyboxShader("resources/shaders/skyBoxVertexShader.vs", "resources/shaders/skyBoxFragmentShader.fs");
     Shader modelShader("resources/shaders/modelVertexShader.vs","resources/shaders/modelFragmentShader.fs");
 
-    Model cyborgModel("resources/objects/cyborg/cyborg.obj");
+    Model cyborgModel("resources/objects/naruto/2nrtbod1out.obj");
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -229,8 +229,8 @@ int main()
         glDisable(GL_CULL_FACE);
         glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
         model = glm::mat4(1.0f);
-        model = glm::scale(model,glm::vec3(2.0f,2.0f,2.0f));
-        model = glm::rotate(model,currentFrame,glm::vec3(0.0f,1.0f,0.0f));
+        model = glm::scale(model,glm::vec3(0.05f,0.05f,0.05f));
+        model = glm::rotate(model,4.7f,glm::vec3(1.0f,0.0f,0.0f));
         modelShader.use();
         if(k<pointLightPositions.size()) {
             makeLight(modelShader, k, pointLightPositions,sin(k));
